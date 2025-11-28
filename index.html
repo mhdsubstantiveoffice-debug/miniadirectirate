@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحديد موقع الموظف</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: #667eea;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .form-group {
+            margin: 20px 0;
+            text-align: right;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-whatsapp {
+            background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            margin-top: 15px;
+        }
+
+        .btn-whatsapp:hover {
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-settings {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            margin-top: 10px;
+            font-size: 16px;
+            padding: 12px 25px;
+        }
+
+        .btn-settings:hover {
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.4);
+        }
+
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success {
+            background: #d1edff;
+            color: #004085;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .permission-guide {
+            background: #fff3cd;
+            color: #856404;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: right;
+            display: none;
+        }
+
+        .permission-guide h3 {
+            margin-bottom: 15px;
+            color: #856404;
+        }
+
+        .permission-steps {
+            text-align: right;
+            margin-right: 15px;
+        }
+
+        .permission-steps li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .location-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: right;
+            display: none;
+        }
+
+        .info-item {
+            margin: 10px 0;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        .value {
+            color: #333;
+            margin-top: 5px;
+        }
+
+        .whatsapp-icon {
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .settings-icon {
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">📍</div>
+        <h1>تحديد موقع الموظف</h1>
+        <p class="subtitle">يرجى إدخال اسمك والسماح بتحديد الموقع</p>
+        
+        <div class="form-group">
+            <label for="employeeName">اسم الموظف:</label>
+            <input type="text" id="employeeName" placeholder="أدخل اسمك الكامل" required>
+        </div>
+        
+        <button class="btn" onclick="getUserLocation()" id="submitBtn">
+            إرسال الموقع عبر واتساب
+        </button>
+
+        <button class="btn btn-settings" onclick="openLocationSettings()" id="settingsBtn">
+            <span class="settings-icon">⚙️</span>
+            فتح إعدادات الموقع
+        </button>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>جاري تحديد الموقع وإرسال البيانات...</p>
+        </div>
+        
+        <div class="error" id="error"></div>
+        <div class="permission-guide" id="permissionGuide">
+            <h3>📱 كيفية تفعيل خدمة الموقع</h3>
+            <ol class="permission-steps">
+                <li><strong>Android:</strong> الإعدادات → الموقع → تشغيل</li>
+                <li><strong>iPhone:</strong> الإعدادات → الخصوصية → خدمات الموقع → تشغيل</li>
+                <li><strong>المتصفح:</strong> السماح للموقع بالوصول إلى موقعك</li>
+                <li>ارجع للصفحة وحاول مرة أخرى</li>
+            </ol>
+        </div>
+        
+        <div class="success" id="success"></div>
+        
+        <div class="location-info" id="locationInfo">
+            <div class="info-item">
+                <div class="label">اسم الموظف:</div>
+                <div class="value" id="displayName"></div>
+            </div>
+            <div class="info-item">
+                <div class="label">الإحداثيات:</div>
+                <div class="value" id="coordinates"></div>
+            </div>
+            <div class="info-item">
+                <div class="label">رابط الخريطة:</div>
+                <div class="value" id="mapLink"></div>
+            </div>
+            <div class="info-item">
+                <div class="label">وقت الإرسال:</div>
+                <div class="value" id="timestamp"></div>
+            </div>
+            
+            <button class="btn btn-whatsapp" onclick="sendWhatsApp()" id="whatsappBtn">
+                <span class="whatsapp-icon">📱</span>
+                إرسال عبر واتساب مرة أخرى
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // رقم الواتساب الثابت
+        const WHATSAPP_NUMBER = "00201002025012";
+        let currentLocationData = null;
+        let permissionGuideShown = false;
+
+        function getUserLocation() {
+            const name = document.getElementById('employeeName').value.trim();
+            const btn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const errorDiv = document.getElementById('error');
+            const successDiv = document.getElementById('success');
+            const permissionGuide = document.getElementById('permissionGuide');
+            
+            // التحقق من الاسم
+            if (!name) {
+                showError("يرجى إدخال اسم الموظف");
+                return;
+            }
+            
+            // إعادة تعيين العناصر
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            permissionGuide.style.display = 'none';
+            loading.style.display = 'block';
+            btn.disabled = true;
+            btn.textContent = 'جاري تحديد الموقع...';
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => prepareWhatsAppData(position, name),
+                    (error) => handleLocationError(error, name),
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                showError("المتصفح لا يدعم خدمة تحديد الموقع");
+            }
+        }
+
+        function handleLocationError(error, name) {
+            const permissionGuide = document.getElementById('permissionGuide');
+            const loading = document.getElementById('loading');
+            const btn = document.getElementById('submitBtn');
+            
+            loading.style.display = 'none';
+            btn.disabled = false;
+            btn.textContent = 'إرسال الموقع عبر واتساب';
+
+            // عرض دليل الإعدادات
+            permissionGuide.style.display = 'block';
+            permissionGuideShown = true;
+
+            let message = "";
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    message = "تم رفض صلاحية الموقع. يرجى تفعيل خدمة الموقع من الإعدادات.";
+                    showSettingsAlert();
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    message = "خدمة الموقع غير مفعلة. يرجى تشغيل GPS من الإعدادات.";
+                    showSettingsAlert();
+                    break;
+                case error.TIMEOUT:
+                    message = "انتهت المهلة. يرجى التأكد من تشغيل خدمة الموقع.";
+                    break;
+                default:
+                    message = "حدث خطأ في تحديد الموقع.";
+                    break;
+            }
+            
+            showError(message);
+        }
+
+        function showSettingsAlert() {
+            if (!permissionGuideShown) {
+                alert(`🔧 إعدادات الموقع مطلوبة
+
+لتفعيل خدمة الموقع:
+
+📱 Android:
+• فتح الإعدادات → الموقع → تشغيل
+• السماح للمتصفح باستخدام الموقع
+
+📱 iPhone:
+• الإعدادات → الخصوصية → خدمات الموقع → تشغيل
+• تأكد من تفعيل الموقع للمتصفح
+
+🌐 المتصفح:
+• اضغط على 🔒 بجوار الرابط
+• اختر "السماح" للموقع
+
+ثم اضغط على "فتح إعدادات الموقع" أو حاول مرة أخرى`);
+                permissionGuideShown = true;
+            }
+        }
+
+        function openLocationSettings() {
+            // محاولة فتح إعدادات الموقع حسب النظام
+            if (/Android/i.test(navigator.userAgent)) {
+                // فتح إعدادات الموقع في Android
+                window.location.href = 'intent://settings/location#Intent;scheme=android-app;end';
+            } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                // فتح إعدادات الموقع في iOS
+                window.location.href = 'App-Prefs:root=Privacy&path=LOCATION';
+            } else {
+                // فتح إعدادات المتصفح
+                if (navigator.permissions) {
+                    navigator.permissions.query({name: 'geolocation'})
+                        .then(function(permissionStatus) {
+                            alert('يرجى تفعيل الموقع من إعدادات المتصفح (القفل بجوار الرابط)');
+                        });
+                } else {
+                    alert('يرجى تفعيل خدمة الموقع من إعدادات الجهاز أو المتصفح');
+                }
+            }
+            
+            // إظهار دليل الإعدادات
+            document.getElementById('permissionGuide').style.display = 'block';
+        }
+
+        function prepareWhatsAppData(position, name) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+            const timestamp = new Date().toLocaleString('ar-EG');
+            
+            const mapUrl = `https://maps.google.com/?q=${lat},${lng}`;
+            const locationUrl = `https://www.google.com/maps?q=${lat},${lng}&z=16`;
+            
+            // حفظ البيانات للإستخدام لاحقاً
+            currentLocationData = {
+                name: name,
+                lat: lat,
+                lng: lng,
+                accuracy: accuracy,
+                timestamp: timestamp,
+                mapUrl: mapUrl,
+                locationUrl: locationUrl
+            };
+            
+            // إرسال البيانات عبر واتساب
+            sendWhatsApp();
+        }
+
+        function sendWhatsApp() {
+            if (!currentLocationData) {
+                showError("لا توجد بيانات موقع للإرسال");
+                return;
+            }
+
+            const loading = document.getElementById('loading');
+            const successDiv = document.getElementById('success');
+            const errorDiv = document.getElementById('error');
+            const locationInfo = document.getElementById('locationInfo');
+            const btn = document.getElementById('submitBtn');
+            
+            loading.style.display = 'none';
+            
+            const { name, lat, lng, accuracy, timestamp, mapUrl, locationUrl } = currentLocationData;
+            
+            // تحضير رسالة الواتساب
+            const message = `📍 *تقرير موقع الموظف*
+
+👤 *الاسم:* ${name}
+📍 *الإحداثيات:* ${lat.toFixed(6)}, ${lng.toFixed(6)}
+🗺️ *رابط الخريطة:* ${mapUrl}
+🎯 *الدقة:* ± ${Math.round(accuracy)} متر
+⏰ *الوقت:* ${timestamp}
+📱 *الجهاز:* ${navigator.userAgent.split(' ')[0]}
+
+_تم الإرسال تلقائياً عبر نظام التتبع_`;
+            
+            // ترميز الرسالة للرابط
+            const encodedMessage = encodeURIComponent(message);
+            
+            // إنشاء رابط واتساب
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+            
+            // فتح واتساب في نافذة جديدة
+            window.open(whatsappUrl, '_blank');
+            
+            // عرض رسالة النجاح
+            successDiv.style.display = 'block';
+            successDiv.innerHTML = `
+                <h3>✅ تم إرسال البيانات بنجاح!</h3>
+                <p>تم فتح واتساب مع البيانات جاهزة للإرسال</p>
+                <p><strong>إذا لم يفتح واتساب تلقائياً:</strong></p>
+                <ol style="text-align: right; margin-right: 20px;">
+                    <li>افتح واتساب يدوياً</li>
+                    <li>ابحث عن الرقم: ${WHATSAPP_NUMBER}</li>
+                    <li>انسخ الرسالة وأرسلها</li>
+                </ol>
+            `;
+            
+            // عرض المعلومات للمستخدم
+            locationInfo.style.display = 'block';
+            document.getElementById('displayName').textContent = name;
+            document.getElementById('coordinates').textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+            document.getElementById('mapLink').innerHTML = `<a href="${mapUrl}" target="_blank">فتح الخريطة</a>`;
+            document.getElementById('timestamp').textContent = timestamp;
+            
+            btn.disabled = false;
+            btn.textContent = 'إرسال بيانات أخرى';
+            
+            // نسخ البيانات تلقائياً للاحتياط
+            const dataToCopy = `📍 تقرير موقع الموظف\n\n👤 الاسم: ${name}\n📍 الإحداثيات: ${lat.toFixed(6)}, ${lng.toFixed(6)}\n🗺️ رابط الخريطة: ${mapUrl}\n⏰ الوقت: ${timestamp}`;
+            navigator.clipboard.writeText(dataToCopy).then(() => {
+                console.log("تم نسخ البيانات للاحتياط");
+            }).catch(() => {});
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.style.display = 'block';
+            errorDiv.innerHTML = `<strong>⚠️ خطأ:</strong> ${message}`;
+        }
+
+        // السماح بالإرسال بالضغط على Enter
+        document.getElementById('employeeName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                getUserLocation();
+            }
+        });
+
+        // كشف نوع الجهاز وعرض الإرشادات المناسبة
+        document.addEventListener('DOMContentLoaded', function() {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if (isMobile) {
+                console.log('تم الكشف عن جهاز محمول - جاهز لفتح الإعدادات');
+            }
+        });
+    </script>
+</body>
+</html>
